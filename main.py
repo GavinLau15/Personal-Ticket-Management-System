@@ -16,20 +16,44 @@ try:
     cur = conn.cursor()
     
     # create table named tickets
-    cur.execute("""CREATE TABLE IF NOT EXISTS tickets (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        description TEXT,
-        status VARCHAR(50) NOT NULL,
-        priority VARCHAR(50) NOT NULL,
-        creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    """)
+    # cur.execute("""CREATE TABLE IF NOT EXISTS tickets (
+    #     id SERIAL PRIMARY KEY,
+    #     title VARCHAR(255) NOT NULL,
+    #     description TEXT,
+    #     status VARCHAR(50) NOT NULL,
+    #     priority VARCHAR(50) NOT NULL,
+    #     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    # );
+    # """)
+    cur.execute("""
+                CREATE TABLE IF NOT EXISTS tickets (
+                ticketid INT PRIMARY KEY, 
+                information TEXT NOT NULL
+                )
+                """)
     
-    cur.execute("""INSERT INTO tickets (id, title, description, status, priority, creation_date) 
-                VALUES 
-                (DEFAULT, 'Plotter supplies', 'Run script to get supplies for monthly accounting.', 'In Progress', 'Low', DEFAULT);
-        """)
+    cur.execute("""
+                INSERT INTO tickets (ticketid, information)
+                VALUES (%s, %s)
+                """,
+                (15, "testing"))
+    
+    cur.execute("""
+                INSERT INTO tickets (ticketid, information)
+                VALUES (118, 'test')
+                """)
+    
+    insertIntoTickets = "INSERT INTO tickets (ticketid, information) VALUES (%s, %s)"
+    parameters = (17, "testing")
+    
+    cur.execute(insertIntoTickets, parameters)
+    
+    # cur.execute("""INSERT INTO tickets (id, title, description, status, priority, creation_date) 
+    #             VALUES 
+    #             (DEFAULT, 'Plotter supplies', 'Run script to get supplies for monthly accounting.', 'In Progress', 'Low', DEFAULT);
+    #     """)
+    
+    
     
     # save transactions to database
     conn.commit()
