@@ -1,8 +1,20 @@
 import psycopg2
+from enum import Enum
+
+class TicketPriority(Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+    
+class TicketStatus(Enum):
+    ASSIGNED = "Assigned"
+    INPROGRESS = "In Progress"
+    RESOLVED = "Resolved"
 
 
 conn = None
 cur = None
+priority = Enum
 
 # start connection object, connects to database
 try:
@@ -28,32 +40,21 @@ try:
     cur.execute("""
                 CREATE TABLE IF NOT EXISTS tickets (
                 ticketid INT PRIMARY KEY, 
+                priority 
                 information TEXT NOT NULL
                 )
                 """)
     
-    cur.execute("""
-                INSERT INTO tickets (ticketid, information)
-                VALUES (%s, %s)
-                """,
-                (15, "testing"))
-    
-    cur.execute("""
-                INSERT INTO tickets (ticketid, information)
-                VALUES (118, 'test')
-                """)
-    
-    insertIntoTickets = "INSERT INTO tickets (ticketid, information) VALUES (%s, %s)"
+    insertTicketsQuery = "INSERT INTO tickets (ticketid, information) VALUES (%s, %s)"
     parameters = (17, "testing")
     
     cur.execute(insertIntoTickets, parameters)
     
-    # cur.execute("""INSERT INTO tickets (id, title, description, status, priority, creation_date) 
-    #             VALUES 
-    #             (DEFAULT, 'Plotter supplies', 'Run script to get supplies for monthly accounting.', 'In Progress', 'Low', DEFAULT);
-    #     """)
+    # editing info of ticket
     
+    # deleting a ticket
     
+    #changing priority of ticket
     
     # save transactions to database
     conn.commit()
