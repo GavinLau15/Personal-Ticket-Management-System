@@ -11,10 +11,8 @@ class TicketStatus(Enum):
     INPROGRESS = "In Progress"
     RESOLVED = "Resolved"
 
-
 conn = None
 cur = None
-priority = Enum
 
 # start connection object, connects to database
 try:
@@ -27,28 +25,31 @@ try:
     # create a cursor object, used to execute commands/queries
     cur = conn.cursor()
     
-    # create table named tickets
-    # cur.execute("""CREATE TABLE IF NOT EXISTS tickets (
-    #     id SERIAL PRIMARY KEY,
-    #     title VARCHAR(255) NOT NULL,
-    #     description TEXT,
-    #     status VARCHAR(50) NOT NULL,
-    #     priority VARCHAR(50) NOT NULL,
-    #     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    # );
-    # """)
     cur.execute("""
                 CREATE TABLE IF NOT EXISTS tickets (
-                ticketid INT PRIMARY KEY, 
-                priority 
-                information TEXT NOT NULL
+                id SERIAL PRIMARY KEY, 
+                title TEXT NOT NULL, 
+                priority TEXT NOT NULL,
+                status TEXT NOT NULL,
+                information TEXT NOT NULL,
+                startdate DATE NOT NULL DEFAULT CURRENT_DATE
                 )
                 """)
     
-    insertTicketsQuery = "INSERT INTO tickets (ticketid, information) VALUES (%s, %s)"
-    parameters = (17, "testing")
+    createTicketQuery = "INSERT INTO tickets (title, priority, status, information) VALUES (%s, %s, %s, %s)"
+    testParam1 = ("testing", "low", "in progress", "for testing")
     
-    cur.execute(insertIntoTickets, parameters)
+    cur.execute(createTicketQuery, testParam1)
+    
+    # retrieveTicketQuery = "SELECT * FROM tickets WHERE id = %s"
+    # id1 = (1,)
+    
+    # row = cur.execute(retrieveTicketQuery, id1)
+    
+    # if row is not None:
+    #     print("success")
+    # else:
+    #     print("Not found")
     
     # editing info of ticket
     
