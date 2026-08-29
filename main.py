@@ -32,24 +32,28 @@ try:
                 priority TEXT NOT NULL,
                 status TEXT NOT NULL,
                 information TEXT NOT NULL,
-                startdate DATE NOT NULL DEFAULT CURRENT_DATE
+                start_date DATE NOT NULL DEFAULT CURRENT_DATE
                 )
                 """)
     
+    # create ticket
     createTicketQuery = "INSERT INTO tickets (title, priority, status, information) VALUES (%s, %s, %s, %s)"
     testParam1 = ("testing", "low", "in progress", "for testing")
     
     cur.execute(createTicketQuery, testParam1)
     
-    # retrieveTicketQuery = "SELECT * FROM tickets WHERE id = %s"
-    # id1 = (1,)
+    # retrieve ticket based on id
+    retrieveTicketQuery = "SELECT * FROM tickets WHERE id = %s"
+    id1 = (1,)
     
-    # row = cur.execute(retrieveTicketQuery, id1)
+    cur.execute(retrieveTicketQuery, id1)
     
-    # if row is not None:
-    #     print("success")
-    # else:
-    #     print("Not found")
+    row = cur.fetchone()
+    
+    if row is not None:
+        print("success")
+    else:
+        print("Not found")
     
     # editing info of ticket
     
