@@ -36,12 +36,6 @@ try:
                 )
                 """)
     
-    # create ticket
-    createTicketQuery = "INSERT INTO tickets (title, priority, status, information) VALUES (%s, %s, %s, %s)"
-    testParam1 = ("testing", "low", "in progress", "for testing")
-    
-    cur.execute(createTicketQuery, testParam1)
-    
     # retrieve ticket based on id
     retrieveTicketQuery = "SELECT * FROM tickets WHERE id = %s"
     id1 = (1,)
@@ -51,9 +45,13 @@ try:
     row = cur.fetchone()
     
     if row is not None:
-        print("success")
+        print(row)
     else:
         print("Not found")
+        
+    updateTicketInfoQuery = "UPDATE tickets SET information = %s WHERE id = %s"
+    testParams = ("test the update function", 1)
+    cur.execute(updateTicketInfoQuery, testParams)
     
     # editing info of ticket
     
