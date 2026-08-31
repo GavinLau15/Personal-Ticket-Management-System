@@ -44,14 +44,32 @@ def retrieve_all_tickets(cur):
     
     return rows
 
-# update information of ticket with given id
-def update_ticket_info(cur, id, information):
-    query = "UPDATE tickets SET information = %s WHERE id = %s"
-    
-    cur.execute(query, (information, id))
-
 # delete ticket with given id
 def delete_ticket(cur, id):
     query = "DELETE FROM tickets WHERE id = %s"
     
     cur.execute(query, (id,))
+    
+# update title of ticket with given id
+def update_ticket_title(cur, id, title):
+    query = "UPDATE tickets SET title = %s WHERE id = %s"
+    
+    cur.execute(query, (title, id))
+
+# update information of ticket with given id
+def update_ticket_info(cur, id, information):
+    query = "UPDATE tickets SET information = %s WHERE id = %s"
+    
+    cur.execute(query, (information, id))
+    
+# update status of ticket with given id
+def update_ticket_status(cur, id, status):
+    query = "UPDATE tickets SET status = %s WHERE id = %s"
+    
+    cur.execute(query, (status, id))
+    
+# update priority of ticket with given id
+def update_ticket_priority(cur, id, priority):
+    query = "UPDATE tickets SET priority = %s WHERE id = %s"
+    
+    cur.execute(query, (priority, id))
