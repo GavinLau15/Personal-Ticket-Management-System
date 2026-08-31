@@ -30,7 +30,7 @@ def retrieve_ticket(cur, id):
     row = cur.fetchone()
     
     if row is not None:
-        print(row)
+        return row
     else:
         print("Not found")
 
