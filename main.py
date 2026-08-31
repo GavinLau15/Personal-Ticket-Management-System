@@ -35,19 +35,6 @@ try:
                 start_date DATE NOT NULL DEFAULT CURRENT_DATE
                 )
                 """)
-    
-    # retrieve ticket based on id
-    retrieveTicketQuery = "SELECT * FROM tickets WHERE id = %s"
-    id1 = (1,)
-    
-    cur.execute(retrieveTicketQuery, id1)
-    
-    row = cur.fetchone()
-    
-    if row is not None:
-        print(row)
-    else:
-        print("Not found")
         
     updateTicketInfoQuery = "UPDATE tickets SET information = %s WHERE id = %s"
     testParams = ("test the update function", 1)
