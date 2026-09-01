@@ -32,7 +32,7 @@ def retrieve_ticket(cur, id):
     if row is not None:
         return row
     else:
-        print("Not found")
+        return None
 
 # retrieve all tickets
 def retrieve_all_tickets(cur):
@@ -49,6 +49,21 @@ def delete_ticket(cur, id):
     query = "DELETE FROM tickets WHERE id = %s"
     
     cur.execute(query, (id,))
+    
+# get the id of a ticket based off of the title
+# TODO: deal with having multiple tickest with the same title
+def get_ticket_id(cursor, title):
+    query = """
+            SELECT id, title
+            FROM tickets
+            WHERE title = %s
+            """
+    cursor.execute(query, (title,))
+    
+    row = cursor.fetchone()
+    
+    return row[0]
+    
     
 # update title of ticket with given id
 def update_ticket_title(cur, id, title):
