@@ -1,7 +1,12 @@
 import psycopg2
 
-# create a table called tickets
-# TODO add a username column
+# create a table called tickets with the following columns
+# - Ticket ID (id)
+# - Ticket Title (title)
+# - Ticket Priority (priority)
+# - Ticket Status (status)
+# - Ticket Information (information)
+# - Ticket Creation/Start Date (start_date)
 def create_table(cur):
     query = """
                 CREATE TABLE IF NOT EXISTS tickets (

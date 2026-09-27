@@ -1,58 +1,59 @@
 import psycopg2
+from source import database
+from dotenv import load_dotenv
+import os
 from enum import Enum
 
+# TODO
+# scrub gitub of password perhaps
+# global install vs virtual environment learn
+
+# the 3 different priority options for a ticket
+# pass .value into database.py functions - DB column is plain TEXT, not a Postgres enum type
 class TicketPriority(Enum):
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
-    
+
+# the 3 different status options for a ticket
+# pass .value into database.py functions - DB column is plain TEXT, not a Postgres enum type
 class TicketStatus(Enum):
     ASSIGNED = "Assigned"
     INPROGRESS = "In Progress"
     RESOLVED = "Resolved"
 
+# conn/cur default to None so finally's "is not None" checks don't raise an error if connect() 
+# fails before they're ever assigned 
 conn = None
 cur = None
 
-# start connection object, connects to database
+# read the .env file and makes its values available through os.environ
+load_dotenv()
+
+# start connection object, used to connect to database
 try:
-    conn = psycopg2.connect(host="localhost", 
-                            dbname="Personal Ticket Management", 
-                            user="postgres", 
-                            password="chinesedragon", 
-                            port=5432)
+    conn = psycopg2.connect(host=os.environ["DB_HOST"], 
+                            dbname=os.environ["DB_NAME"],
+                            user=os.environ["DB_USER"],
+                            password=os.environ["DB_PASSWORD"],
+                            port=os.environ["DB_PORT"])
     
     # create a cursor object, used to execute commands/queries
     cur = conn.cursor()
     
-    cur.execute("""
-                CREATE TABLE IF NOT EXISTS tickets (
-                id SERIAL PRIMARY KEY, 
-                title TEXT NOT NULL, 
-                priority TEXT NOT NULL,
-                status TEXT NOT NULL,
-                information TEXT NOT NULL,
-                start_date DATE NOT NULL DEFAULT CURRENT_DATE
-                )
-                """)
-        
-    updateTicketInfoQuery = "UPDATE tickets SET information = %s WHERE id = %s"
-    testParams = ("test the update function", 1)
-    cur.execute(updateTicketInfoQuery, testParams)
+    database.create_table(cur)
     
-    # editing info of ticket
+    database.create_ticket(cur, "Ticket 1", TicketPriority.LOW.value, TicketStatus.ASSIGNED.value, "Some info")
+    database.create_ticket(cur, "Ticket 2", TicketPriority.MEDIUM.value, TicketStatus.INPROGRESS.value, "Little info")
+    database.create_ticket(cur, "Ticket 3", TicketPriority.HIGH.value, TicketStatus.RESOLVED.value, "Lots of info")
     
-    # deleting a ticket
-    
-    #changing priority of ticket
-    
-    # save transactions to database
     conn.commit()
-    
+
+# catches and prints any error (connection failures, bad queries, etc.) raised in try block above
 except Exception as error:
     print("Error while connecting to PostgreSQL", error)
     
-# close the cursor and connection if they were opened
+# guarantees the cursor and connection are closed if they were opened even if an error occured above
 finally:
     if cur is not None:
         cur.close()
