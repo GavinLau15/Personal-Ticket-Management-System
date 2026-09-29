@@ -22,9 +22,14 @@ def create_table(cur):
 
 # create a ticket using a given title, priority, status and information, id and date are auto-created
 def create_ticket(cur, title, priority, status, information):
-    query = "INSERT INTO tickets (title, priority, status, information) VALUES (%s, %s, %s, %s)"
+    query = """
+            INSERT INTO tickets (title, priority, status, information) 
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+            """
     
     cur.execute(query, (title, priority, status, information))
+    return cur.fetchone()[0]
 
 # retrieve ticket based on id parameter and print it
 def retrieve_ticket(cur, id):

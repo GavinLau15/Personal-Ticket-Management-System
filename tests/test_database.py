@@ -1,10 +1,14 @@
 import pytest
 import psycopg2
-from source.database import create_ticket, retrieve_ticket, delete_ticket, update_ticket_title, update_ticket_priority, update_ticket_status, update_ticket_info
+from source import database
+
+# test creating a table
+def test_create_table():
+    assert
 
 # test creation of ticket
 def test_create_ticket(cursor):
-    create_ticket(cursor, "Outlook Setup", "Low", "In Progress", "Set up Outlook account")
+    database.create_ticket(cursor, "Outlook Setup", "Low", "In Progress", "Set up Outlook account")
     
     query = """
             SELECT id, title, priority, status, information
@@ -24,7 +28,7 @@ def test_create_ticket(cursor):
 
 # tes    
 def test_retrieve_ticket_found(cursor):
-    create_ticket(cursor, "Set up firewall", "High", "In Progress", "Set up firewall for plotters")
+    database.create_ticket(cursor, "Set up firewall", "High", "In Progress", "Set up firewall for plotters")
     
     query = """
             SELECT id, title, priority, status, information
@@ -38,7 +42,7 @@ def test_retrieve_ticket_found(cursor):
     
     id = row[0]
     
-    retrieveResult = retrieve_ticket(cursor, id)
+    retrieveResult = database.retrieve_ticket(cursor, id)
     
     assert retrieveResult[0] == id
     assert retrieveResult[1] == "Set up firewall"
@@ -47,15 +51,15 @@ def test_retrieve_ticket_found(cursor):
     assert retrieveResult[4] == "Set up firewall for plotters"
 
 def test_retrieve_ticket_not_found(cursor):
-    create_ticket(cursor, "Assign VPC", "Low", "Resolved", "Assign a VPC for remote use")
+    database.create_ticket(cursor, "Assign VPC", "Low", "Resolved", "Assign a VPC for remote use")
     
-    retrieveResult = retrieve_ticket(cursor, 67)
+    retrieveResult = database.retrieve_ticket(cursor, 67)
     
     assert retrieveResult == None
 
 # test updating the status of a ticket with given id
 def test_update_ticket_status(cursor):
-    create_ticket(cursor, "Excel crashing", "Low", "Assigned", "Excel crashing when opening specific file")
+    database.create_ticket(cursor, "Excel crashing", "Low", "Assigned", "Excel crashing when opening specific file")
     
     query = """
             SELECT id, title, priority, status, information
@@ -69,7 +73,7 @@ def test_update_ticket_status(cursor):
     
     id = row[0]
     
-    update_ticket_status(cursor, id, "Resolved")
+    database.update_ticket_status(cursor, id, "Resolved")
     
     newQuery = """
             SELECT id, title, priority, status, information
@@ -84,7 +88,7 @@ def test_update_ticket_status(cursor):
     assert newRow[3] == "Resolved"
 
 def test_update_ticket_title(cursor):
-    create_ticket(cursor, "Desktop Crashing", "Medium", "Assigned", "Desktop is frequently crashing")
+    database.create_ticket(cursor, "Desktop Crashing", "Medium", "Assigned", "Desktop is frequently crashing")
     
     query = """
             SELECT id, title, priority, status, information
@@ -98,7 +102,7 @@ def test_update_ticket_title(cursor):
     
     id = row[0]
     
-    update_ticket_title(cursor, id, "OS Crashing")
+    database.update_ticket_title(cursor, id, "OS Crashing")
     
     newQuery = """
             SELECT id, title, priority, status, information
@@ -112,7 +116,7 @@ def test_update_ticket_title(cursor):
     assert newRow[1] == "OS Crashing"
     
 def test_update_ticket_priority(cursor):
-    create_ticket(cursor, "Can't find email", "Medium", "Assigned", "Cannot find specific email sent a week ago")
+    database.create_ticket(cursor, "Can't find email", "Medium", "Assigned", "Cannot find specific email sent a week ago")
     
     query = """
             SELECT id, title, priority, status, information
@@ -126,7 +130,7 @@ def test_update_ticket_priority(cursor):
     
     id = row[0]
     
-    update_ticket_priority(cursor, id, "High")
+    database.update_ticket_priority(cursor, id, "High")
     
     newQuery = """
             SELECT id, title, priority, status, information
@@ -140,7 +144,7 @@ def test_update_ticket_priority(cursor):
     assert newRow[2] == "High"
     
 def test_update_ticket_info(cursor):
-    create_ticket(cursor, "Set up firewall", "High", "In Progress", "Set up firewall for plotters")
+    database.create_ticket(cursor, "Set up firewall", "High", "In Progress", "Set up firewall for plotters")
     
     query = """
             SELECT id, title, priority, status, information
@@ -154,7 +158,7 @@ def test_update_ticket_info(cursor):
     
     id = row[0]
     
-    update_ticket_info(cursor, id, "Configure SMTP/DNS for printers/plotters")
+    database.update_ticket_info(cursor, id, "Configure SMTP/DNS for printers/plotters")
     
     newQuery = """
             SELECT id, title, priority, status, information
@@ -169,7 +173,7 @@ def test_update_ticket_info(cursor):
     
 
 def test_delete_row(cursor):
-    create_ticket(cursor, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
+    database.create_ticket(cursor, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
     
     query = """
             SELECT id, priority, status, information
@@ -183,7 +187,7 @@ def test_delete_row(cursor):
     
     id = row[0]
     
-    delete_ticket(cursor, id)
+    database.delete_ticket(cursor, id)
     
     assert retrieve_ticket(cursor, id) == None
     
