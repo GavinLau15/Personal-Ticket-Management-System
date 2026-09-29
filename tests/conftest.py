@@ -1,29 +1,32 @@
 import pytest
 import psycopg2
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 @pytest.fixture
 def cursor():
     
     conn = psycopg2.connect(
-        host="localhost",
-        dbname="Personal Ticket Management",
-        user="postgres",
-        password="chinesedragon",
-        port=5432
+        host=os.environ["DB_HOST"],
+        dbname=os.environ["DB_NAME"],
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
+        port=os.environ["DB_PORT"]
     )
     
     cur = conn.cursor()
     
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS tickets (
-            id SERIAL PRIMARY KEY,
-            title TEXT NOT NULL,
-            priority TEXT NOT NULL,
-            status TEXT NOT NULL,
-            information TEXT NOT NULL,
-            start_date DATE NOT NULL DEFAULT CURRENT_DATE
-        )
-    """)
+                CREATE TABLE IF NOT EXISTS tickets (
+                id SERIAL PRIMARY KEY,
+                title TEXT NOT NULL,
+                priority TEXT NOT NULL,
+                status TEXT NOT NULL,
+                information TEXT NOT NULL,
+                start_date DATE NOT NULL DEFAULT CURRENT_DATE)
+                """)
     
     conn.commit()
 

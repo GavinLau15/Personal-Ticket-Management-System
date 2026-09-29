@@ -1,6 +1,6 @@
 import psycopg2
 
-# create a table called tickets with the following columns
+# create a table (if it doesn't exist already) called tickets with the following columns
 # - Ticket ID (id)
 # - Ticket Title (title)
 # - Ticket Priority (priority)
@@ -17,7 +17,7 @@ def create_table(cur):
                 information TEXT NOT NULL,
                 start_date DATE NOT NULL DEFAULT CURRENT_DATE
                 )
-                """
+            """
     cur.execute(query)
 
 # create a ticket using a given title, priority, status and information, id and date are auto-created

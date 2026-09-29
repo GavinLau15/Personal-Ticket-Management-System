@@ -43,9 +43,11 @@ try:
     
     database.create_table(cur)
     
-    database.create_ticket(cur, "Ticket 1", TicketPriority.LOW.value, TicketStatus.ASSIGNED.value, "Some info")
-    database.create_ticket(cur, "Ticket 2", TicketPriority.MEDIUM.value, TicketStatus.INPROGRESS.value, "Little info")
-    database.create_ticket(cur, "Ticket 3", TicketPriority.HIGH.value, TicketStatus.RESOLVED.value, "Lots of info")
+    # database.create_ticket(cur, "Ticket 1", TicketPriority.LOW.value, TicketStatus.ASSIGNED.value, "Some info")
+    # database.create_ticket(cur, "Ticket 2", TicketPriority.MEDIUM.value, TicketStatus.INPROGRESS.value, "Little info")
+    # database.create_ticket(cur, "Ticket 3", TicketPriority.HIGH.value, TicketStatus.RESOLVED.value, "Lots of info")
+    
+    database.delete_ticket(cur, 5)
     
     conn.commit()
 
