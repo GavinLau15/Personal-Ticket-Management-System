@@ -21,7 +21,7 @@ def create_table(cur):
     cur.execute(query)
 
 # create a ticket using a given title, priority, status and information, id and date are auto-created
-def create_ticket(cur, title, priority, status, information):
+def create_ticket(cur, title, priority, status, information) -> int:
     query = """
             INSERT INTO tickets (title, priority, status, information) 
             VALUES (%s, %s, %s, %s)

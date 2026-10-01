@@ -48,6 +48,11 @@ try:
     # database.create_ticket(cur, "Ticket 3", TicketPriority.HIGH.value, TicketStatus.RESOLVED.value, "Lots of info")
     
     database.delete_ticket(cur, 5)
+    database.delete_ticket(cur, 1)
+    database.delete_ticket(cur, 2)
+    database.delete_ticket(cur, 3)
+    database.delete_ticket(cur, 4)
+    database.delete_ticket(cur, 6)
     
     conn.commit()
 

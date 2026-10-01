@@ -16,7 +16,7 @@ def cursor():
         port=os.environ["DB_PORT"]
     )
     
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur = conn.cursor()
     
     create_table(cur)
     
