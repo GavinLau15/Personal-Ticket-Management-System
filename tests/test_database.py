@@ -8,7 +8,6 @@ from source import database
 
 # test creating a ticket
 def test_create_ticket(cursor):
-    
     ticket_id = database.create_ticket(cursor, "Outlook Setup", "Low", "In Progress", "Set up Outlook")
     
     cursor.execute("""
@@ -42,18 +41,18 @@ def test_retrieve_ticket(cursor):
 # test the retrieval of a ticket that does not exist
 def test_retrieve_ticket_not_found(cursor):
     row = database.retrieve_ticket(cursor, 999999)
-    # with pytest.raises(ValueError, match="Ticket not found"):
     
     assert row is None
-    
-    
 
-# def test_retrieve_ticket_not_found(cursor):
-#     database.create_ticket(cursor, "Assign VPC", "Low", "Resolved", "Assign a VPC for remote use")
+# test deleting a ticket
+def test_delete_ticket(cursor):
+    ticket_id = database.create_ticket(cursor, "Temporary ticket", "Low", "Assigned", "Test ticket")
     
-#     retrieveResult = database.retrieve_ticket(cursor, 67)
+    database.delete_ticket(cursor, ticket_id)
     
-#     assert retrieveResult == None
+    row = database.retrieve_ticket(cursor, ticket_id)
+    
+    assert row is None
 
 # # test updating the status of a ticket with given id
 # def test_update_ticket_status(cursor):
@@ -170,26 +169,6 @@ def test_retrieve_ticket_not_found(cursor):
 #     assert newRow[4] == "Configure SMTP/DNS for printers/plotters"
     
 
-# def test_delete_row(cursor):
-#     database.create_ticket(cursor, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
-    
-#     query = """
-#             SELECT id, priority, status, information
-#             FROM tickets
-#             WHERE title = %s
-#             """
-            
-#     cursor.execute(query, ("Printer jamming",))
-    
-#     row = cursor.fetchone()
-    
-#     id = row[0]
-    
-#     database.delete_ticket(cursor, id)
-    
-#     assert retrieve_ticket(cursor, id) == None
-    
-            
-
-    # ticket5 = create_ticket(cur, "Assign VPC", "Low", "Resolved", "Assign a VPC for remote use")
-    # ticket7 = create_ticket(cur, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
+# database.create_ticket(cursor, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
+# database.create_ticket(cur, "Assign VPC", "Low", "Resolved", "Assign a VPC for remote use")
+# database.create_ticket(cur, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
