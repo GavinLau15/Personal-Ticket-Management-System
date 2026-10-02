@@ -2,25 +2,10 @@ import psycopg2
 from source import database
 from dotenv import load_dotenv
 import os
-from enum import Enum
 
 # TODO
 # scrub gitub of password perhaps
 # global install vs virtual environment learn
-
-# the 3 different priority options for a ticket
-# pass .value into database.py functions - DB column is plain TEXT, not a Postgres enum type
-class TicketPriority(Enum):
-    LOW = "Low"
-    MEDIUM = "Medium"
-    HIGH = "High"
-
-# the 3 different status options for a ticket
-# pass .value into database.py functions - DB column is plain TEXT, not a Postgres enum type
-class TicketStatus(Enum):
-    ASSIGNED = "Assigned"
-    INPROGRESS = "In Progress"
-    RESOLVED = "Resolved"
 
 # conn/cur default to None so finally's "is not None" checks don't raise an error if connect() 
 # fails before they're ever assigned 

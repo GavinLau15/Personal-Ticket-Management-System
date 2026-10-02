@@ -2,10 +2,6 @@ import pytest
 import psycopg2
 from source import database
 
-# test creating a table
-# def test_create_table():
-#     assert
-
 # test creating a ticket
 def test_create_ticket(cursor):
     ticket_id = database.create_ticket(cursor, "Outlook Setup", "Low", "In Progress", "Set up Outlook")
@@ -24,6 +20,20 @@ def test_create_ticket(cursor):
     assert row[1] == "Low"
     assert row[2] == "In Progress"
     assert row[3] == "Set up Outlook"
+
+# test creating ticket with invalid priority entry
+def test_create_ticket_invalid_priority(cursor):
+    with pytest.raises(ValueError, match="Invalid priority: Extremely High"):
+        database.create_ticket(cursor, "Install W11", "Extremely High", "Assigned", "Install Windows 11 on PC")
+
+# test creating ticket with invalid status entry
+def test_create_ticket_invalid_status(cursor):
+    with pytest.raises(ValueError, match="Invalid status: Created"):
+        database.create_ticket(cursor, "Replace monitor", "Low", "Created", "Replace left side monitor")
+        
+    rows = database.retrieve_all_tickets(cursor)
+
+    assert len(rows) == 0
 
 # test the succesful retrieval of a ticket
 def test_retrieve_ticket(cursor):
@@ -106,6 +116,12 @@ def test_update_ticket_status(cursor):
     assert row[3] == "Resolved"
     assert row[4] == "Printer is jamming when printing large loads"
 
+# test updating status of ticket with invalid entry
+def test_update_status_invalid_entry(cursor):
+    ticket_id = database.create_ticket(cursor, "Change mouse sensitivity", "Low", "Assigned", "Mouse sensitivity is too high")
+    with pytest.raises(ValueError, match="Invalid status: Meh"):
+        database.update_ticket_status(cursor, ticket_id, "Meh")
+
 # test updating the priority of a ticket
 def test_update_ticket_priority(cursor):
     ticket_id = database.create_ticket(cursor, "Can't find email", "Medium", "Assigned", "Cannot find specific email sent a week ago")
@@ -119,3 +135,9 @@ def test_update_ticket_priority(cursor):
     assert row[2] == "High"
     assert row[3] == "Assigned"
     assert row[4] == "Cannot find specific email sent a week ago"
+
+# test updating priority of ticket with invalid entry
+def test_update_priority_invalid_entry(cursor):
+    ticket_id = database.create_ticket(cursor, "Server down", "High", "Assigned", "Entire print server is down")
+    with pytest.raises(ValueError, match="Invalid priority: Immediately"):
+        database.update_ticket_priority(cursor, ticket_id, "Immediately")

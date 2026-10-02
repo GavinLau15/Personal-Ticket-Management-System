@@ -1,4 +1,24 @@
 import psycopg2
+from enum import Enum
+
+# the 3 different priority options for a ticket
+# pass .value into database.py functions - DB column is plain TEXT, not a Postgres enum type
+class TicketPriority(Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
+# the 3 different status options for a ticket
+# pass .value into database.py functions - DB column is plain TEXT, not a Postgres enum type
+class TicketStatus(Enum):
+    ASSIGNED = "Assigned"
+    INPROGRESS = "In Progress"
+    RESOLVED = "Resolved"
+    
+# helper function to validate if ticket priority and status are valid entries    
+def validate_enum_values(value, enum_class, field_name):
+    if value not in [member.value for member in enum_class]:
+        raise ValueError(f"Invalid {field_name}: {value}")
 
 # create a table (if it doesn't exist already) called tickets with the following columns
 # - Ticket ID (id)
@@ -21,9 +41,11 @@ def create_table(cursor):
     cursor.execute(query)
 
 # create a ticket using a given title, priority, status and information, id and date are auto-created
-# TODO make sure that values in priroty and status are valid
 # TODO maybe make it return a tuple to return the create time as well
 def create_ticket(cursor, title, priority, status, information) -> int:
+    validate_enum_values(priority, TicketPriority, "priority")
+    validate_enum_values(status, TicketStatus, "status")
+    
     query = """
             INSERT INTO tickets (title, priority, status, information) 
             VALUES (%s, %s, %s, %s)
@@ -77,13 +99,16 @@ def update_ticket_info(cursor, id, information):
     
 # update status of ticket with given id
 def update_ticket_status(cursor, id, status):
+    validate_enum_values(status, TicketStatus, "status")
+    
     query = "UPDATE tickets SET status = %s WHERE id = %s"
     
     cursor.execute(query, (status, id))
     
 # update priority of ticket with given id
-# TODO make this make sure updated prio is a valid one
 def update_ticket_priority(cursor, id, priority):
+    validate_enum_values(priority, TicketPriority, "priority")
+    
     query = "UPDATE tickets SET priority = %s WHERE id = %s"
     
     cursor.execute(query, (priority, id))
