@@ -44,6 +44,16 @@ def test_retrieve_ticket_not_found(cursor):
     
     assert row is None
 
+# test the retrieval of all tickets 
+def test_retrieve_all_tickets(cursor):
+    database.create_ticket(cursor, "Provision user", "Low", "Assigned", "Provide a machine for a new user")
+    database.create_ticket(cursor, "Assign VPC", "Medium", "In Progress", "Assign a VPC for remote use")
+    database.create_ticket(cursor, "Change password", "High", "Resolved", "Change password")
+    
+    rows = database.retrieve_all_tickets(cursor)
+    
+    assert len(rows) == 3
+
 # test deleting a ticket
 def test_delete_ticket(cursor):
     ticket_id = database.create_ticket(cursor, "Temporary ticket", "Low", "Assigned", "Test ticket")
@@ -81,7 +91,8 @@ def test_update_ticket_info(cursor):
     assert row[2] == "Medium"
     assert row[3] == "Assigned"
     assert row[4] == "PC crashes frequently"
-    
+
+# test updating the status of a ticket
 def test_update_ticket_status(cursor):
     ticket_id = database.create_ticket(cursor, "Printer jamming", "Low", "In Progress", "Printer is jamming when printing large loads")
     
@@ -90,11 +101,12 @@ def test_update_ticket_status(cursor):
     row = database.retrieve_ticket(cursor, ticket_id)
     
     assert row[0] == ticket_id
-    assert row[1] == "Can't find email"
-    assert row[2] == "Medium"
-    assert row[3] == "Assigned"
-    assert row[4] == "Cannot find specific email sent a week ago"
+    assert row[1] == "Printer jamming"
+    assert row[2] == "Low"
+    assert row[3] == "Resolved"
+    assert row[4] == "Printer is jamming when printing large loads"
 
+# test updating the priority of a ticket
 def test_update_ticket_priority(cursor):
     ticket_id = database.create_ticket(cursor, "Can't find email", "Medium", "Assigned", "Cannot find specific email sent a week ago")
     
@@ -104,11 +116,6 @@ def test_update_ticket_priority(cursor):
     
     assert row[0] == ticket_id
     assert row[1] == "Can't find email"
-    assert row[2] == "Medium"
+    assert row[2] == "High"
     assert row[3] == "Assigned"
     assert row[4] == "Cannot find specific email sent a week ago"
-    
-
-# database.create_ticket(cursor, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")
-# database.create_ticket(cur, "Assign VPC", "Low", "Resolved", "Assign a VPC for remote use")
-# database.create_ticket(cur, "Printer jamming", "Low", "Resolved", "Printer is jamming when printing large loads")

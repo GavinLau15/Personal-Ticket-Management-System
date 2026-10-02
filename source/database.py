@@ -7,7 +7,7 @@ import psycopg2
 # - Ticket Status (status)
 # - Ticket Information (information)
 # - Ticket Creation/Start Date (start_date)
-def create_table(cur):
+def create_table(cursor):
     query = """
                 CREATE TABLE IF NOT EXISTS tickets (
                 id SERIAL PRIMARY KEY, 
@@ -18,28 +18,28 @@ def create_table(cur):
                 start_date DATE NOT NULL DEFAULT CURRENT_DATE
                 )
             """
-    cur.execute(query)
+    cursor.execute(query)
 
 # create a ticket using a given title, priority, status and information, id and date are auto-created
 # TODO make sure that values in priroty and status are valid
 # TODO maybe make it return a tuple to return the create time as well
-def create_ticket(cur, title, priority, status, information) -> int:
+def create_ticket(cursor, title, priority, status, information) -> int:
     query = """
             INSERT INTO tickets (title, priority, status, information) 
             VALUES (%s, %s, %s, %s)
             RETURNING id
             """
     
-    cur.execute(query, (title, priority, status, information))
-    return cur.fetchone()[0]
+    cursor.execute(query, (title, priority, status, information))
+    return cursor.fetchone()[0]
 
 # retrieve ticket based on id parameter and print it
-def retrieve_ticket(cur, id):
+def retrieve_ticket(cursor, id):
     query = "SELECT * FROM tickets WHERE id = %s"
     
-    cur.execute(query, (id,))
+    cursor.execute(query, (id,))
     
-    row = cur.fetchone()
+    row = cursor.fetchone()
     
     if row is not None:
         return row
@@ -48,57 +48,42 @@ def retrieve_ticket(cur, id):
 
 # retrieve all tickets
 # TODO maybe allow specify what we are looking for, like all resolved, etc.
-def retrieve_all_tickets(cur):
+def retrieve_all_tickets(cursor):
     query = "SELECT * FROM tickets"
     
-    cur.execute(query)
+    cursor.execute(query)
     
-    rows = cur.fetchall()
+    rows = cursor.fetchall()
     
     return rows
 
 # delete ticket with given id
-def delete_ticket(cur, id):
+def delete_ticket(cursor, id):
     query = "DELETE FROM tickets WHERE id = %s"
     
-    cur.execute(query, (id,))
-    
-# get the id of a ticket based off of the title
-# TODO: deal with having multiple tickest with the same title
-def get_ticket_id(cursor, title):
-    query = """
-            SELECT id, title
-            FROM tickets
-            WHERE title = %s
-            """
-    cursor.execute(query, (title,))
-    
-    row = cursor.fetchone()
-    
-    return row[0]
-    
-    
+    cursor.execute(query, (id,))
+
 # update title of ticket with given id
-def update_ticket_title(cur, id, title):
+def update_ticket_title(cursor, id, title):
     query = "UPDATE tickets SET title = %s WHERE id = %s"
     
-    cur.execute(query, (title, id))
+    cursor.execute(query, (title, id))
 
 # update information of ticket with given id
-def update_ticket_info(cur, id, information):
+def update_ticket_info(cursor, id, information):
     query = "UPDATE tickets SET information = %s WHERE id = %s"
     
-    cur.execute(query, (information, id))
+    cursor.execute(query, (information, id))
     
 # update status of ticket with given id
-def update_ticket_status(cur, id, status):
+def update_ticket_status(cursor, id, status):
     query = "UPDATE tickets SET status = %s WHERE id = %s"
     
-    cur.execute(query, (status, id))
+    cursor.execute(query, (status, id))
     
 # update priority of ticket with given id
 # TODO make this make sure updated prio is a valid one
-def update_ticket_priority(cur, id, priority):
+def update_ticket_priority(cursor, id, priority):
     query = "UPDATE tickets SET priority = %s WHERE id = %s"
     
-    cur.execute(query, (priority, id))
+    cursor.execute(query, (priority, id))

@@ -16,15 +16,15 @@ def cursor():
         port=os.environ["DB_PORT"]
     )
     
-    cur = conn.cursor()
+    cursor = conn.cursor()
     
-    create_table(cur)
+    create_table(cursor)
     
     conn.commit()
 
     # pass cur to each test, everything before yield runs before test
-    yield cur
+    yield cursor
 
     conn.rollback()  # undo any inserts the test made
-    cur.close()
+    cursor.close()
     conn.close()
