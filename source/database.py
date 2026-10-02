@@ -19,6 +19,9 @@ class TicketStatus(Enum):
 def validate_enum_values(value, enum_class, field_name):
     if value not in [member.value for member in enum_class]:
         raise ValueError(f"Invalid {field_name}: {value}")
+    
+# TODO: make helper so that it checks if a ticket exists before actually updating anything
+def require_ticket_exists()
 
 # create a table (if it doesn't exist already) called tickets with the following columns
 # - Ticket ID (id)

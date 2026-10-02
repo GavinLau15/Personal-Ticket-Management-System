@@ -25,6 +25,10 @@ def test_create_ticket(cursor):
 def test_create_ticket_invalid_priority(cursor):
     with pytest.raises(ValueError, match="Invalid priority: Extremely High"):
         database.create_ticket(cursor, "Install W11", "Extremely High", "Assigned", "Install Windows 11 on PC")
+    
+    rows = database.retrieve_all_tickets(cursor)
+    
+    assert len(rows) == 0
 
 # test creating ticket with invalid status entry
 def test_create_ticket_invalid_status(cursor):
@@ -117,10 +121,15 @@ def test_update_ticket_status(cursor):
     assert row[4] == "Printer is jamming when printing large loads"
 
 # test updating status of ticket with invalid entry
-def test_update_status_invalid_entry(cursor):
+def test_update_status_invalid_status(cursor):
     ticket_id = database.create_ticket(cursor, "Change mouse sensitivity", "Low", "Assigned", "Mouse sensitivity is too high")
+    
     with pytest.raises(ValueError, match="Invalid status: Meh"):
         database.update_ticket_status(cursor, ticket_id, "Meh")
+        
+    row = database.retrieve_ticket(cursor, ticket_id)
+    
+    assert row[3] == "Assigned"
 
 # test updating the priority of a ticket
 def test_update_ticket_priority(cursor):
@@ -137,7 +146,21 @@ def test_update_ticket_priority(cursor):
     assert row[4] == "Cannot find specific email sent a week ago"
 
 # test updating priority of ticket with invalid entry
-def test_update_priority_invalid_entry(cursor):
+def test_update_priority_invalid_priority(cursor):
     ticket_id = database.create_ticket(cursor, "Server down", "High", "Assigned", "Entire print server is down")
+    
     with pytest.raises(ValueError, match="Invalid priority: Immediately"):
         database.update_ticket_priority(cursor, ticket_id, "Immediately")
+    
+    row = database.retrieve_ticket(cursor, ticket_id)
+    
+    assert row[2] == "High"
+
+# TODO: create tickets for when entries are valid, but you cant find the ticket itself
+def test_update_priority_invalid_id(cursor):
+
+def test_update_priority_invalid_id(cursor):
+
+def test_update_title_invalid_id(cursor):
+
+def test_update_info_invalid_id(cursor):
