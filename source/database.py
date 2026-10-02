@@ -22,6 +22,7 @@ def create_table(cur):
 
 # create a ticket using a given title, priority, status and information, id and date are auto-created
 # TODO make sure that values in priroty and status are valid
+# TODO maybe make it return a tuple to return the create time as well
 def create_ticket(cur, title, priority, status, information) -> int:
     query = """
             INSERT INTO tickets (title, priority, status, information) 
@@ -46,6 +47,7 @@ def retrieve_ticket(cur, id):
         return None
 
 # retrieve all tickets
+# TODO maybe allow specify what we are looking for, like all resolved, etc.
 def retrieve_all_tickets(cur):
     query = "SELECT * FROM tickets"
     
@@ -95,6 +97,7 @@ def update_ticket_status(cur, id, status):
     cur.execute(query, (status, id))
     
 # update priority of ticket with given id
+# TODO make this make sure updated prio is a valid one
 def update_ticket_priority(cur, id, priority):
     query = "UPDATE tickets SET priority = %s WHERE id = %s"
     
