@@ -21,7 +21,14 @@ def validate_enum_values(value, enum_class, field_name):
         raise ValueError(f"Invalid {field_name}: {value}")
     
 # TODO: make helper so that it checks if a ticket exists before actually updating anything
-def require_ticket_exists()
+# TODO: add it into the necessary functions, updates, and any others
+def require_ticket_exists(cursor, ticket_id):
+    row = retrieve_ticket(cursor, ticket_id)
+    
+    if row != None:
+        return True
+    else:
+        return False
 
 # create a table (if it doesn't exist already) called tickets with the following columns
 # - Ticket ID (id)
@@ -90,12 +97,18 @@ def delete_ticket(cursor, id):
 
 # update title of ticket with given id
 def update_ticket_title(cursor, id, title):
+    if require_ticket_exists(cursor, id) == False:
+        raise ValueError(f"Ticket could not be found with given ID: {id}")
+        
     query = "UPDATE tickets SET title = %s WHERE id = %s"
     
     cursor.execute(query, (title, id))
 
 # update information of ticket with given id
 def update_ticket_info(cursor, id, information):
+    if require_ticket_exists(cursor, id) == False:
+        raise ValueError(f"Ticket could not be found with given ID: {id}")
+        
     query = "UPDATE tickets SET information = %s WHERE id = %s"
     
     cursor.execute(query, (information, id))
@@ -104,6 +117,9 @@ def update_ticket_info(cursor, id, information):
 def update_ticket_status(cursor, id, status):
     validate_enum_values(status, TicketStatus, "status")
     
+    if require_ticket_exists(cursor, id) == False:
+        raise ValueError(f"Ticket could not be found with given ID: {id}")
+    
     query = "UPDATE tickets SET status = %s WHERE id = %s"
     
     cursor.execute(query, (status, id))
@@ -111,6 +127,9 @@ def update_ticket_status(cursor, id, status):
 # update priority of ticket with given id
 def update_ticket_priority(cursor, id, priority):
     validate_enum_values(priority, TicketPriority, "priority")
+    
+    if require_ticket_exists(cursor, id) == False:
+        raise ValueError(f"Ticket could not be found with given ID: {id}")
     
     query = "UPDATE tickets SET priority = %s WHERE id = %s"
     

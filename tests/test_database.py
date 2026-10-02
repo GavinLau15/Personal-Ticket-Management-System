@@ -92,7 +92,12 @@ def test_update_ticket_title(cursor):
     assert row[3] == "Assigned"
     assert row[4] == "Excel crashing when opening specific file"
 
-# test updating the information of a ticket
+# test updating the title of a ticket with a given invalid ticket ID
+def test_update_title_invalid_id(cursor):
+    with pytest.raises(ValueError, match="Ticket could not be found with given ID: 999999"):
+        database.update_ticket_title(cursor, 999999, "No network connection")
+
+# test updating the information of a ticket 
 def test_update_ticket_info(cursor):
     ticket_id = database.create_ticket(cursor, "Desktop Crashing", "Medium", "Assigned", "Desktop is frequently crashing")
     
@@ -105,31 +110,11 @@ def test_update_ticket_info(cursor):
     assert row[2] == "Medium"
     assert row[3] == "Assigned"
     assert row[4] == "PC crashes frequently"
-
-# test updating the status of a ticket
-def test_update_ticket_status(cursor):
-    ticket_id = database.create_ticket(cursor, "Printer jamming", "Low", "In Progress", "Printer is jamming when printing large loads")
     
-    database.update_ticket_status(cursor, ticket_id, "Resolved")
-    
-    row = database.retrieve_ticket(cursor, ticket_id)
-    
-    assert row[0] == ticket_id
-    assert row[1] == "Printer jamming"
-    assert row[2] == "Low"
-    assert row[3] == "Resolved"
-    assert row[4] == "Printer is jamming when printing large loads"
-
-# test updating status of ticket with invalid entry
-def test_update_status_invalid_status(cursor):
-    ticket_id = database.create_ticket(cursor, "Change mouse sensitivity", "Low", "Assigned", "Mouse sensitivity is too high")
-    
-    with pytest.raises(ValueError, match="Invalid status: Meh"):
-        database.update_ticket_status(cursor, ticket_id, "Meh")
-        
-    row = database.retrieve_ticket(cursor, ticket_id)
-    
-    assert row[3] == "Assigned"
+# test updating the information of a ticket with a given invalid ticket ID
+def test_update_info_invalid_id(cursor):
+    with pytest.raises(ValueError, match="Ticket could not be found with given ID: 999999"):
+        database.update_ticket_info(cursor, 999999, "Update Excel macro")
 
 # test updating the priority of a ticket
 def test_update_ticket_priority(cursor):
@@ -156,11 +141,37 @@ def test_update_priority_invalid_priority(cursor):
     
     assert row[2] == "High"
 
-# TODO: create tickets for when entries are valid, but you cant find the ticket itself
+# test updating the priority of a ticket with a given invalid ticket ID
 def test_update_priority_invalid_id(cursor):
+    with pytest.raises(ValueError, match="Ticket could not be found with given ID: 999999"):
+        database.update_ticket_priority(cursor, 999999, "Low")
 
-def test_update_priority_invalid_id(cursor):
+# test updating the status of a ticket
+def test_update_ticket_status(cursor):
+    ticket_id = database.create_ticket(cursor, "Printer jamming", "Low", "In Progress", "Printer is jamming when printing large loads")
+    
+    database.update_ticket_status(cursor, ticket_id, "Resolved")
+    
+    row = database.retrieve_ticket(cursor, ticket_id)
+    
+    assert row[0] == ticket_id
+    assert row[1] == "Printer jamming"
+    assert row[2] == "Low"
+    assert row[3] == "Resolved"
+    assert row[4] == "Printer is jamming when printing large loads"
 
-def test_update_title_invalid_id(cursor):
+# test updating status of ticket with invalid entry
+def test_update_status_invalid_status(cursor):
+    ticket_id = database.create_ticket(cursor, "Change mouse sensitivity", "Low", "Assigned", "Mouse sensitivity is too high")
+    
+    with pytest.raises(ValueError, match="Invalid status: Meh"):
+        database.update_ticket_status(cursor, ticket_id, "Meh")
+        
+    row = database.retrieve_ticket(cursor, ticket_id)
+    
+    assert row[3] == "Assigned"
 
-def test_update_info_invalid_id(cursor):
+# test updating the status of a ticket with a given invalid ticket ID
+def test_update_status_invalid_id(cursor):
+    with pytest.raises(ValueError, match="Ticket could not be found with given ID: 999999"):
+        database.update_ticket_status(cursor, 999999, "In Progress")
