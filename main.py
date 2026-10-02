@@ -10,7 +10,7 @@ import os
 # conn/cur default to None so finally's "is not None" checks don't raise an error if connect() 
 # fails before they're ever assigned 
 conn = None
-cur = None
+cursor = None
 
 # read the .env file and makes its values available through os.environ
 load_dotenv()
@@ -24,20 +24,17 @@ try:
                             port=os.environ["DB_PORT"])
     
     # create a cursor object, used to execute commands/queries
-    cur = conn.cursor()
+    cursor = conn.cursor()
     
-    database.create_table(cur)
+    database.create_table(cursor)
     
-    # database.create_ticket(cur, "Ticket 1", TicketPriority.LOW.value, TicketStatus.ASSIGNED.value, "Some info")
-    # database.create_ticket(cur, "Ticket 2", TicketPriority.MEDIUM.value, TicketStatus.INPROGRESS.value, "Little info")
-    # database.create_ticket(cur, "Ticket 3", TicketPriority.HIGH.value, TicketStatus.RESOLVED.value, "Lots of info")
+    # ticket_id1 = database.create_ticket(cursor, "Ticket 1", "Low", "Assigned", "Some info")
+    # ticket_id2 = database.create_ticket(cursor, "Ticket 2", "Medium", "In Progress", "Little info")
+    # ticket_id3 = database.create_ticket(cursor, "Ticket 3", "High", "Resolved", "Lots of info")
     
-    database.delete_ticket(cur, 5)
-    database.delete_ticket(cur, 1)
-    database.delete_ticket(cur, 2)
-    database.delete_ticket(cur, 3)
-    database.delete_ticket(cur, 4)
-    database.delete_ticket(cur, 6)
+    database.delete_ticket(cursor, 334)
+    database.delete_ticket(cursor, 335)
+    database.delete_ticket(cursor, 336)
     
     conn.commit()
 
@@ -47,7 +44,7 @@ except Exception as error:
     
 # guarantees the cursor and connection are closed if they were opened even if an error occured above
 finally:
-    if cur is not None:
-        cur.close()
+    if cursor is not None:
+        cursor.close()
     if conn is not None:
         conn.close()

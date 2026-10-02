@@ -20,9 +20,8 @@ def validate_enum_values(value, enum_class, field_name):
     if value not in [member.value for member in enum_class]:
         raise ValueError(f"Invalid {field_name}: {value}")
     
-# TODO: make helper so that it checks if a ticket exists before actually updating anything
-# TODO: add it into the necessary functions, updates, and any others
-def require_ticket_exists(cursor, ticket_id):
+# helper function to validate if a ticket exists or not based off of a given ID
+def validate_ticket_exists(cursor, ticket_id):
     row = retrieve_ticket(cursor, ticket_id)
     
     if row != None:
@@ -91,13 +90,16 @@ def retrieve_all_tickets(cursor):
 
 # delete ticket with given id
 def delete_ticket(cursor, id):
+    if validate_ticket_exists(cursor, id) == False:
+        raise ValueError(f"Ticket could not be found with given ID: {id}")
+    
     query = "DELETE FROM tickets WHERE id = %s"
     
     cursor.execute(query, (id,))
 
 # update title of ticket with given id
 def update_ticket_title(cursor, id, title):
-    if require_ticket_exists(cursor, id) == False:
+    if validate_ticket_exists(cursor, id) == False:
         raise ValueError(f"Ticket could not be found with given ID: {id}")
         
     query = "UPDATE tickets SET title = %s WHERE id = %s"
@@ -106,7 +108,7 @@ def update_ticket_title(cursor, id, title):
 
 # update information of ticket with given id
 def update_ticket_info(cursor, id, information):
-    if require_ticket_exists(cursor, id) == False:
+    if validate_ticket_exists(cursor, id) == False:
         raise ValueError(f"Ticket could not be found with given ID: {id}")
         
     query = "UPDATE tickets SET information = %s WHERE id = %s"
@@ -117,7 +119,7 @@ def update_ticket_info(cursor, id, information):
 def update_ticket_status(cursor, id, status):
     validate_enum_values(status, TicketStatus, "status")
     
-    if require_ticket_exists(cursor, id) == False:
+    if validate_ticket_exists(cursor, id) == False:
         raise ValueError(f"Ticket could not be found with given ID: {id}")
     
     query = "UPDATE tickets SET status = %s WHERE id = %s"
@@ -128,7 +130,7 @@ def update_ticket_status(cursor, id, status):
 def update_ticket_priority(cursor, id, priority):
     validate_enum_values(priority, TicketPriority, "priority")
     
-    if require_ticket_exists(cursor, id) == False:
+    if validate_ticket_exists(cursor, id) == False:
         raise ValueError(f"Ticket could not be found with given ID: {id}")
     
     query = "UPDATE tickets SET priority = %s WHERE id = %s"

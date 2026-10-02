@@ -78,6 +78,11 @@ def test_delete_ticket(cursor):
     
     assert row is None
     
+# test deleting a ticket that does not exist
+def test_delete_ticket_not_found(cursor):
+    with pytest.raises(ValueError, match="Ticket could not be found with given ID: 999999"):
+        database.delete_ticket(cursor, 999999)
+    
 # test updating the title of a ticket
 def test_update_ticket_title(cursor):
     ticket_id = database.create_ticket(cursor, "Excel crashing", "Low", "Assigned", "Excel crashing when opening specific file")
